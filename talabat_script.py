@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import psycopg2
 import time
+import logging
 
 DB_HOST = "localhost"
 DB_NAME = "talabat_reviews"
@@ -33,7 +34,9 @@ def connect_to_db():
             user=DB_USER,
             password=DB_PASSWORD
         )
+        print("Connected to the database")
         return conn
+
     except Exception as e:
         print(f"Error connecting to the database: {e}")
         return None
@@ -81,6 +84,7 @@ try:
         if not reviews:
             raise Exception("No reviews found on the page.")
         else:
+            print("Extracted reviews")
             return reviews
 
     conn = connect_to_db()
@@ -99,7 +103,7 @@ try:
 
         for review in reviews:
             review_text = review.find("p", attrs={"data-testid": "customer-review"}).text
-            if review_text and review_text not in seen_reviews:
+            if  review_text not in seen_reviews:
                 seen_reviews.add(review_text)
                 all_reviews.append(review)
 
@@ -115,13 +119,15 @@ try:
             review_source = "Talabat"
             insert_review(conn, text, rating, author_name, review_source, restaurant_name)
         except Exception as e:
-            print(f"Error processing review: {e}")
+            logging.error(f"Error processing review: {e}")
 
 except Exception as e:
-    print(f"Error during execution: {e}")
+    logging.error(f"Error during execution: {e}")
 
 finally:
     if conn:
         conn.close()
+        print ("Connection closed")
     if driver:
         driver.quit()
+        print ("Driver closed")
