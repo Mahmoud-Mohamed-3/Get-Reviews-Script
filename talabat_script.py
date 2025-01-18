@@ -83,9 +83,12 @@ try:
 
     def extract_reviews():
         page_source = driver.page_source
-        soup = BeautifulSoup(page_source, "html.parser", from_encoding="utf-8")
+        soup = BeautifulSoup(page_source, "html.parser")
         reviews = soup.find_all("div", attrs={"data-testid": "reviews-item-component"})
-        return reviews
+        if not reviews:
+            raise Exception("No reviews found on the page.")
+        else:
+            return reviews
 
     conn = connect_to_db()
     if not conn:
