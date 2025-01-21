@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/mano/Desktop/Python Scripts/venv/bin/python3" "$0" "$@"
+'''exec' "/home/mano/Desktop/Python Scripts/Get-Reviews-Script/venv/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
